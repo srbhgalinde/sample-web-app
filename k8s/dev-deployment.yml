@@ -1,0 +1,39 @@
+
+# k8s/dev-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-web-app-dev
+  labels:
+    app: sample-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-web-app
+  template:
+    metadata:
+      labels:
+        app: sample-web-app
+    spec:
+      containers:
+        - name: sample-web-app
+          image: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/sample-web-app:dev
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENV
+              value: "dev"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-web-app-service-dev
+spec:
+  selector:
+    app: sample-web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
